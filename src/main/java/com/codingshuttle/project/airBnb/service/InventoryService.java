@@ -6,5 +6,5 @@ import org.springframework.transaction.annotation.Transactional;
 public interface InventoryService {
     void initializeRoomForAYear(Room room);
     @Transactional
-    void deleteFutureInventories(Room room);
+    void deleteAllInventories(Room room);
 }
