@@ -50,6 +50,9 @@ public class Inventory {
     @Column(nullable = false,columnDefinition = "INTEGER DEFAULT 0")
     private Integer bookedCount;
 
+    @Column(nullable = false,columnDefinition = "INTEGER DEFAULT 0")
+    private Integer reversedCount;
+
     @Column(nullable = false,precision = 10,scale = 2)
     private BigDecimal price;//basePrice * sugraFactor
 

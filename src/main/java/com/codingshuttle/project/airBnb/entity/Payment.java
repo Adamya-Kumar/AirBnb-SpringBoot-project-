@@ -1,5 +1,6 @@
 package com.codingshuttle.project.airBnb.entity;
 
+import com.codingshuttle.project.airBnb.entity.enums.BookingStatus;
 import com.codingshuttle.project.airBnb.entity.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -33,4 +34,8 @@ public class Payment {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Booking booking;
+
 }

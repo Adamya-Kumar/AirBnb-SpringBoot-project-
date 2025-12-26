@@ -2,6 +2,8 @@ package com.codingshuttle.project.airBnb.service.Impl;
 
 import com.codingshuttle.project.airBnb.Repository.HotelRepository;
 import com.codingshuttle.project.airBnb.dto.HotelDTO;
+import com.codingshuttle.project.airBnb.dto.HotelInfoDTO;
+import com.codingshuttle.project.airBnb.dto.RoomDTO;
 import com.codingshuttle.project.airBnb.entity.Hotel;
 import com.codingshuttle.project.airBnb.entity.Room;
 import com.codingshuttle.project.airBnb.exceptions.ResourceNotFoundException;
@@ -12,6 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -88,6 +93,20 @@ public class HotelServeImpl implements HotelService {
             inventoryService.initializeRoomForAYear(room);
         }
         return true;
+    }
+
+    @Override
+    public HotelInfoDTO getHotelInfo(Long hotelId) {
+        Hotel hotel=hotelRepository.findById(hotelId).orElseThrow(()->{
+            log.error("Error unable to update the hotel by id: "+hotelId);
+            throw new ResourceNotFoundException("Error unable to update the hotel by id: "+hotelId);
+        });
+        List<RoomDTO> rooms=hotel.getRooms()
+                .stream()
+                .map((element)->modelMapper.map(element, RoomDTO.class))
+                .toList();
+
+        return new HotelInfoDTO(modelMapper.map(hotel,HotelDTO.class),rooms);
     }
 
 }
