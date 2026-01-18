@@ -51,7 +51,7 @@ public class Inventory {
     private Integer bookedCount;
 
     @Column(nullable = false,columnDefinition = "INTEGER DEFAULT 0")
-    private Integer reversedCount;
+    private Integer reversedCount=0;
 
     @Column(nullable = false,precision = 10,scale = 2)
     private BigDecimal price;

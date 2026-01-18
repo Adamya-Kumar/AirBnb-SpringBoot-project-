@@ -1,7 +1,9 @@
 package com.codingshuttle.project.airBnb.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -13,6 +15,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class HotelMinPrice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,4 +38,9 @@ public class HotelMinPrice {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+
+    public HotelMinPrice(Hotel hotel, LocalDate date) {
+        this.hotel=hotel;
+        this.date=date;
+    }
 }

@@ -1,6 +1,7 @@
 package com.codingshuttle.project.airBnb.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -20,7 +21,7 @@ public class Room {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name="hotel_id",nullable = false)
-    @ToString.Exclude
+    @JsonIgnore
     private Hotel hotel;
 
     @Column(nullable = false)

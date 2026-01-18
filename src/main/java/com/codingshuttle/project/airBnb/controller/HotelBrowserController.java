@@ -1,5 +1,6 @@
 package com.codingshuttle.project.airBnb.controller;
 
+import com.codingshuttle.project.airBnb.advice.ApiResponse;
 import com.codingshuttle.project.airBnb.dto.HotelDTO;
 import com.codingshuttle.project.airBnb.dto.HotelInfoDTO;
 import com.codingshuttle.project.airBnb.dto.HotelPriceDTO;
@@ -24,13 +25,13 @@ public class HotelBrowserController {
     private final HotelService hotelService;
 
     @GetMapping("/search")
-    public ResponseEntity<Page<HotelPriceDTO>> searchHotel(@RequestBody HotelSearchRequestDTO searchRequestDTO){
-        return ResponseEntity.ok(inventoryService.searchHostels(searchRequestDTO));
+    public ResponseEntity<ApiResponse<List<HotelPriceDTO>>> searchHotel(@RequestBody HotelSearchRequestDTO searchRequestDTO){
+        return ResponseEntity.ok(new ApiResponse<>(inventoryService.searchHostels(searchRequestDTO).getContent()));
     }
 
     @GetMapping("/{hotelId}/info")
-    public ResponseEntity<HotelInfoDTO> getHotelInfo(@PathVariable Long hotelId){
-        return ResponseEntity.ok(hotelService.getHotelInfo(hotelId));
+    public ResponseEntity<ApiResponse<HotelInfoDTO>> getHotelInfo(@PathVariable Long hotelId){
+        return ResponseEntity.ok(new ApiResponse<>(hotelService.getHotelInfo(hotelId)));
     }
 }
 

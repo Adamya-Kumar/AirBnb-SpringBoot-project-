@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
-@Service
+
 @RequiredArgsConstructor
 public class SugarPricingStrategy implements PricingStrategy{
     private final PricingStrategy wapper;

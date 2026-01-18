@@ -41,6 +41,7 @@ public class InventoryServiceImpl implements InventoryService {
         for(;!today.isAfter(endDate);today=today.plusDays(1)){
             Inventory inventory=Inventory.builder()
                     .hotel(room.getHotel())
+                    .reversedCount(0)
                     .room(room)
                     .bookedCount(0)
                     .city(room.getHotel().getCity())
@@ -82,6 +83,6 @@ public class InventoryServiceImpl implements InventoryService {
                 total,
                 pageable
         );
-        return hotelPage;
+        return  hotelPage;
     }
 }

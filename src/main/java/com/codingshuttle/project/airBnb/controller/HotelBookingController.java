@@ -1,5 +1,6 @@
 package com.codingshuttle.project.airBnb.controller;
 
+import com.codingshuttle.project.airBnb.advice.ApiResponse;
 import com.codingshuttle.project.airBnb.dto.BookingDTO;
 import com.codingshuttle.project.airBnb.dto.BookingRequestDTO;
 import com.codingshuttle.project.airBnb.dto.GuestDTO;
@@ -18,12 +19,12 @@ public class HotelBookingController {
     private final BookingService bookingService;
 
     @PostMapping("/init")
-    public ResponseEntity<BookingDTO> intitaliseBooking(@RequestBody BookingRequestDTO bookingRequestDTO){
-        return ResponseEntity.ok(bookingService.initialiseBooking(bookingRequestDTO));
+    public ResponseEntity<ApiResponse<BookingDTO>> intitaliseBooking(@RequestBody BookingRequestDTO bookingRequestDTO){
+        return ResponseEntity.ok(new ApiResponse<>(bookingService.initialiseBooking(bookingRequestDTO)));
     }
 
     @PostMapping("/{bookingId}/addGuests")
-    public ResponseEntity<BookingDTO> addGuests(@PathVariable Long bookingId, @RequestBody List<GuestDTO> guestDTOList){
-        return ResponseEntity.ok(bookingService.addGuests(bookingId,guestDTOList));
+    public ResponseEntity<ApiResponse<BookingDTO>> addGuests(@PathVariable Long bookingId, @RequestBody List<GuestDTO> guestDTOList){
+        return ResponseEntity.ok(new ApiResponse<>(bookingService.addGuests(bookingId,guestDTOList)));
     }
 }

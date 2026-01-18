@@ -10,11 +10,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 public interface HotelMinPriceRepository extends JpaRepository<HotelMinPrice,Long> {
 
     @Query("""
-    SELECT DISTINCT com.codingshuttle.project.airBnb.dto.HotelPriceDTO(i.hotel,AVG(i.price))
+    SELECT new com.codingshuttle.project.airBnb.dto.HotelPriceDTO(i.hotel,AVG(i.price))
     FROM HotelMinPrice i
     WHERE i.hotel.city = :city
     AND i.date BETWEEN :startDate AND :endDate
@@ -30,4 +31,6 @@ public interface HotelMinPriceRepository extends JpaRepository<HotelMinPrice,Lon
             @Param("dateCount") long dateCount,
             Pageable pageable
     );
+
+    Optional<HotelMinPrice> findByHotelAndDate(Hotel hotel, LocalDate date);
 }
