@@ -1,7 +1,9 @@
 package com.codingshuttle.project.airBnb.service.Impl;
 
+import com.codingshuttle.project.airBnb.Repository.HotelMinPriceRepository;
 import com.codingshuttle.project.airBnb.Repository.InventoryRepository;
 import com.codingshuttle.project.airBnb.dto.HotelDTO;
+import com.codingshuttle.project.airBnb.dto.HotelPriceDTO;
 import com.codingshuttle.project.airBnb.dto.HotelSearchRequestDTO;
 import com.codingshuttle.project.airBnb.entity.Hotel;
 import com.codingshuttle.project.airBnb.entity.Inventory;
@@ -28,6 +30,7 @@ public class InventoryServiceImpl implements InventoryService {
 
     private final InventoryRepository inventoryRepository;
     private final ModelMapper modelMapper;
+    private final HotelMinPriceRepository hotelMinPriceRepository;
 
     @Override
     public void initializeRoomForAYear(Room room) {
@@ -59,7 +62,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public Page<HotelDTO> searchHostels(HotelSearchRequestDTO searchRequestDTO) {
+    public Page<HotelPriceDTO> searchHostels(HotelSearchRequestDTO searchRequestDTO) {
 
         log.info("Searching hotel for {} city, from {} to {}",
                 searchRequestDTO.getCity(),searchRequestDTO.getStartDate(),searchRequestDTO.getEndDate());
@@ -72,13 +75,13 @@ public class InventoryServiceImpl implements InventoryService {
         long total= ChronoUnit
                 .DAYS.between(searchRequestDTO.getStartDate(),searchRequestDTO.getEndDate())+1;
 
-        Page<Hotel> hotelPage=inventoryRepository.findHotelsWithAvailableInventory(searchRequestDTO.getCity()
+        Page<HotelPriceDTO> hotelPage=hotelMinPriceRepository.findHotelsWithAvailableInventory(searchRequestDTO.getCity()
                 ,searchRequestDTO.getStartDate(),
                 searchRequestDTO.getEndDate(),
                 searchRequestDTO.getRoomCount(),
                 total,
                 pageable
         );
-        return hotelPage.map((element)->modelMapper.map(element,HotelDTO.class));
+        return hotelPage;
     }
 }
