@@ -5,12 +5,15 @@ import com.codingshuttle.project.airBnb.Repository.RoomRepository;
 import com.codingshuttle.project.airBnb.dto.RoomDTO;
 import com.codingshuttle.project.airBnb.entity.Hotel;
 import com.codingshuttle.project.airBnb.entity.Room;
+import com.codingshuttle.project.airBnb.entity.User;
 import com.codingshuttle.project.airBnb.exceptions.ResourceNotFoundException;
+import com.codingshuttle.project.airBnb.exceptions.UnAuthorisedException;
 import com.codingshuttle.project.airBnb.service.InventoryService;
 import com.codingshuttle.project.airBnb.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +35,11 @@ public class RoomServiceImpl implements RoomService {
         log.info("Try to create new Room by name: {}",newRoom.getHotel());
         Hotel hotel=hotelRepository.findById(hotelId).orElseThrow(()->
                 new ResourceNotFoundException("Enable to fetch the hotel by id:{}"));
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!user.equals(hotel.getOwner())){
+            throw new UnAuthorisedException("This user is not owner of this hotel id: "+hotelId);
+        }
+
         Room room=modelMapper.map(newRoom,Room.class);
         room.setHotel(hotel);
         Room savedRoom=roomRepository.save(room);
@@ -69,6 +77,10 @@ public class RoomServiceImpl implements RoomService {
         log.info("Try delete Room by Id: "+roomId);
         Room room=roomRepository.findById(roomId).orElseThrow(()->
                 new ResourceNotFoundException("Error failed to get Room by Id:"+roomId));
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(!user.equals(room.getHotel().getOwner())){
+            throw new UnAuthorisedException("This used is not owner of this hotel id: "+roomId);
+        }
         inventoryService.deleteAllInventories(room);
         roomRepository.deleteById(roomId);
         log.info("Successfully delete Room by Id: {}",roomId);

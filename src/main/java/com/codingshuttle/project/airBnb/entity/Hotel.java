@@ -52,7 +52,7 @@ public class Hotel {
     //contact_info_address
     //contact_info_phone_number
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private User owner;
 
 

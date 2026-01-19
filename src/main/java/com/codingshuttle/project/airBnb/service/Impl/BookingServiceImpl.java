@@ -7,12 +7,14 @@ import com.codingshuttle.project.airBnb.dto.GuestDTO;
 import com.codingshuttle.project.airBnb.entity.*;
 import com.codingshuttle.project.airBnb.entity.enums.BookingStatus;
 import com.codingshuttle.project.airBnb.exceptions.ResourceNotFoundException;
+import com.codingshuttle.project.airBnb.exceptions.UnAuthorisedException;
 import com.codingshuttle.project.airBnb.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.aspectj.asm.IModelFilter;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,6 +83,11 @@ public class BookingServiceImpl implements BookingService {
         Booking booking=bookingRepository.findById(bookingId).orElseThrow(()->
                 new ResourceNotFoundException("Booking not found with id:"+bookingId)
                 );
+        User user = getCurrentUser();
+        if(!user.equals(booking.getUser())){
+            throw new UnAuthorisedException("Booking does not belong to this user id:"+user.getId());
+        }
+
         if(hasBookingExperied(booking)){
             throw  new IllegalArgumentException("Booking is already expired");
         }
@@ -89,7 +96,7 @@ public class BookingServiceImpl implements BookingService {
         }
         for(GuestDTO guestDTO:guestDTOList){
             Guest guest=modelMapper.map(guestDTO,Guest.class);
-            guest.setUser(getCurrentUser());
+            guest.setUser(user);
             guest=guestRepository.save(guest);
             booking.getGuests().add(guest);
         }
@@ -103,8 +110,6 @@ public class BookingServiceImpl implements BookingService {
         }
 
         public User getCurrentUser(){
-            User user =new User();
-            user.setId(1L);
-            return user;
+            return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         }
 }
